@@ -1,26 +1,9 @@
 from fastapi import FastAPI
-from pydantic import BaseModel, field_validator
+
+from backend.schemas import Message, PredictionResponse
+from backend.services import analyze_sentiment
 
 app = FastAPI()
-
-
-class Message(BaseModel):
-    text: str
-
-
-class PredictionResponse(BaseModel):
-    text: str
-    sentiment: str
-
-    @field_validator("text")
-    @classmethod
-    def validate_text(cls, value: str):
-        value = value.strip()
-
-        if not value:
-            raise ValueError("Text cannot be empty")
-
-        return value
 
 
 @app.get("/")
@@ -41,19 +24,3 @@ def predict(message: Message):
         "text": message.text,
         "sentiment": sentiment,
     }
-
-
-def analyze_sentiment(text: str) -> str:
-    text = text.lower()
-    words = text.split()
-    positive_words = {"good", "great", "excellent", "love"}
-    negative_words = {"bad", "terrible", "awful", "hate"}
-
-    for word in words:
-        word = word.strip(".,!?;:")
-        if word in positive_words:
-            return "positive"
-        elif word in negative_words:
-            return "negative"
-
-    return "neutral"
