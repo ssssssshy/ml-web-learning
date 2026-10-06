@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 
-from backend.schemas import Message, PredictionResponse
-from backend.services import analyze_sentiment
+from backend.routers.predictions import router as predictions_router
 
 app = FastAPI()
+
+app.include_router(predictions_router)
 
 
 @app.get("/")
@@ -14,13 +15,3 @@ def analyze_api():
 @app.get("/health")
 def get_status():
     return {"status": "ok"}
-
-
-@app.post("/predict", response_model=PredictionResponse)
-def predict(message: Message):
-    sentiment = analyze_sentiment(message.text)
-
-    return {
-        "text": message.text,
-        "sentiment": sentiment,
-    }
