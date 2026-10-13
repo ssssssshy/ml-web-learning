@@ -10,7 +10,7 @@ app.include_router(predictions_router)
 
 @app.get("/")
 def analyze_api():
-    return {"message": "Review Intelligence API"}
+    return {"message": settings.app_name}
 
 
 @app.get("/health")
