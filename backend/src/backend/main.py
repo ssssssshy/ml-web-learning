@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 
+from backend.config import Settings
 from backend.routers.predictions import router as predictions_router
 
-app = FastAPI()
+settings = Settings()
+app = FastAPI(title=settings.app_name, debug=settings.debug)
 
 app.include_router(predictions_router)
 
